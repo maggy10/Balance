@@ -191,11 +191,11 @@ if archivo is not None:
                 st.dataframe(tabla, width="stretch")
 
                 # Exportación a Excel
-                buffer = io.BytesIO()
-                with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-                    tabla.to_excel(writer, index=False, sheet_name='Balance')
+                #buffer = io.BytesIO()
+                #with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                 #   tabla.to_excel(writer, index=False, sheet_name='Balance')
 
-                archivo_excel = buffer.getvalue()
+                #archivo_excel = buffer.getvalue()
 
                 st.download_button(
                     label="Descargar Tabla en Excel ⬇️ ",
