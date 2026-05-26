@@ -189,8 +189,26 @@ if archivo is not None:
 
 if boton is True:
     df = st.dataframe(st.session_state.df_original)
-    tabla = balance(df)
-    st.write(tabla, width="stretch")
+    
+    # Convertimos la columna a fechas reales
+    df['FECHA'] = pd.to_datetime(df['FECHA_CONEX'], format='%d/%m/%Y', errors='coerce')
+    df['ID'] = df['SUCURSAL_CVE'].astype(str) + df['UNIDAD_OP_CVE'].astype(str) + df['FOLIO_DEF'].astype(str)
+    
+    # Filtrados iniciales reduciendo el tamaño del dataframe lo antes posible
+    df_limpio = df.dropna(subset=['FECHA'])
+    df_limpio = df_limpio[df_limpio['ESTATUS'] == 'Conectado']
+    df_limpio = df_limpio[df_limpio['TIPO_CEGAP'] != 'Cegap Nac. de Proveedores Descontados']
+
+    # Identificar la máscara de duplicados recurrentes para excluir
+    mask_duplicado = (
+        df_limpio['FOLIO_DEF'].between(49999, 79999) &
+        df_limpio['TIPO_CEGAP'].isin(['Cegap de Erogacion', 'Cegap de Erogacion de Proveedores (Mercancias)']) &
+        (df_limpio['TIPO_PAGO'] == 'Cegap de registro')
+    )
+    
+    base = df_limpio[~mask_duplicado].copy()
+
+    st.write(base, width="stretch")
 
 
     
